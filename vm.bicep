@@ -1,7 +1,26 @@
 param appName string = 'alert'
-param vnetName string = '${appName}-vnet'
 param location string = resourceGroup().location
 param rg string = 'alertservice'
+param vnetName string = '${appName}-vnet'
+param storageName string = '${appName}store'
+
+resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
+  name: storageName
+  location: location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_LRS'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    accessTier: 'Hot'
+    routingPreference: {
+      publishMicrosoftEndpoints: true
+    }
+  }
+}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: vnetName
